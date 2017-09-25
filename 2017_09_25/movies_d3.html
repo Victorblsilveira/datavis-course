@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Visualização de Dados</title>
+    
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+  </head>
+  <body>    
+    <div id="chart"></div>
+
+    <div id="chart2"></div>
+    
+    <div id="chart3"></div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+     <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+      .blue{
+        color: white;
+        background-color: #6298ef;
+        margin-top: 5px;
+      }
+    </style>
+
+    <script type="text/javascript">
+      var max = 0;
+      
+      function render(data, comparator,chart){ 
+        console.log(chart)
+        d3.select(chart).selectAll("div.h-bar")
+              .data(data)
+            .enter().append("div")
+            .attr("class", "h-bar")
+            .append("span");
+
+
+        d3.select(chart).selectAll("div.h-bar")
+              .data(data)
+            .attr("class", "h-bar blue")
+            .style("width", function(d){
+                return (d.Worldwide_Gross_M /max)*100+"%";
+            })
+            .select("span")
+                .text(function(d){
+                  return d.Film;
+                });
+
+        if(comparator)
+          d3.select("body")
+              .selectAll("div.h-bar")
+              .sort(comparator);
+
+      }
+
+      function compare(a,b){
+        return b.Worldwide_Gross_M - a.Worldwide_Gross_M
+      }
+
+
+      function compare_2(a,b){
+        return b.Budget_M - a.Budget_M
+      }
+
+      function compare_3(a,b){
+        return (b.Worldwide_Gross_M + b.Budget_M) - (a.Budget_M +a.Worldwide_Gross_M )
+      }
+
+      function calcMax(field, json){
+        for (var i in json){
+            console.log(json[i][field])
+            max = json[i].field> max ? json[i].field : max
+        }
+          
+      }
+
+      d3.json("movies.json", function(error,json){       
+         
+          calcMax("Worldwide_Gross_M",json) 
+          //render(json,compare,"#chart")
+          render(json,compare_2,"#chart2")
+          //render(json,compare_3,"#chart3")
+      })
+
+
+    </script>
+  </body>
+</html>

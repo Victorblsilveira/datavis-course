@@ -1,19 +1,27 @@
-var max = 0;
+var d = d3
+function createChart(id, data, field, options){
+  var color = options.color != undefined ? options.color : '#6298ef'
+  var textColor = options.textColor != undefined ? options.textColor : 'white'
+  var margin = options.margin != undefined ? option.margin : '5'
 
-function render(data, comparator,chart){
-  console.log(chart)
-  d3.select(chart).selectAll("div.h-bar")
+  var comparator =  function (a,b){ return b[field] - a[field]}
+  var max = d3.max(data, function(d){return d[field]});
+
+  d3.select(id).selectAll("div.h-bar")
         .data(data)
       .enter().append("div")
       .attr("class", "h-bar")
       .append("span");
 
 
-  d3.select(chart).selectAll("div.h-bar")
+  d3.select(id).selectAll("div.h-bar")
         .data(data)
-      .attr("class", "h-bar blue")
+      .attr("class", "h-bar")
+      .style("background-color", color)
+      .style("margin",margin+'px')
+      .style("color",textColor)
       .style("width", function(d){
-          return (d.Worldwide_Gross_M /max)*100+"%";
+          return (d[field] /max)*100+"%";
       })
       .select("span")
           .text(function(d){
@@ -24,37 +32,17 @@ function render(data, comparator,chart){
     d3.select("body")
         .selectAll("div.h-bar")
         .sort(comparator);
-
 }
 
-function compare(a,b){
-  return b.Worldwide_Gross_M - a.Worldwide_Gross_M
-}
-
-
-function compare_2(a,b){
-  return b.Budget_M - a.Budget_M
-}
-
-function compare_3(a,b){
-  return (b.Worldwide_Gross_M + b.Budget_M) - (a.Budget_M +a.Worldwide_Gross_M )
-}
-
-
-function calcMax(field, json){
-  for (var i in json){
-      console.log(json[i][field])
-      max = json[i].field> max ? json[i].field : max
-  }
-
-}
-document.onload(function(){
+window.onload = function(){
 
   d3.json("movies.json", function(error,json){
-      calcMax("Worldwide_Gross_M",json)
-      //render(json,compare,"#chart")
-      render(json,compare_2,"#chart2")
-      //render(json,compare_3,"#chart3")
+      for (var i in json){
+        json[i].lucro = json[i].Worldwide_Gross_M - json[i].Budget_M
+      }
+      createChart("#bil",json,'Worldwide_Gross_M' , {})
+      createChart("#orca",json, 'Budget_M', {color: '#e60000'})
+      createChart("#luc", json, 'lucro', {color:'black'})
   })
 
-})
+}

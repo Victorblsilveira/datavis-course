@@ -5,11 +5,11 @@ function createChart(id, data, field, options){
 
   var comparator =  function (a,b){ return b[field] - a[field]}
   var max = d3.max(data, function(d){return d[field]});
-
+  
   d3.select(id).selectAll("div.h-bar")
-        .data(data)
-      .enter().append("div")
-      .attr("class", "h-bar")
+      .data(data)
+    .enter().append("div")
+    .attr("class", "h-bar")
       .append("span");
 
 
@@ -20,7 +20,7 @@ function createChart(id, data, field, options){
       .style("margin",margin+'px')
       .style("color",textColor)
       .style("width", function(d){
-          return (d[field] /max)*100+"%";
+          return 'calc('+(d[field] /max)*100+'% - 12px - '+(margin*2)+'px)';
       })
       .select("span")
           .text(function(d){

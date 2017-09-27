@@ -69,3 +69,20 @@ div {
     display: inline-block;
     width: 45%;
 }
+
+.botao{
+    font-size: 20px;
+    border-width: 0px;
+    margin-left: 5px; 
+    margin-right: 5px;
+}
+
+.bil{background-color: #6298ef}
+.orc{background-color: #e60000}
+.luc{background-color: #6b9b69}
+
+.menu{
+    background-color: #a1a7af; 
+    opacity: 0.5;
+    text-align:center;
+}

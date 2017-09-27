@@ -33,15 +33,42 @@ function createChart(id, data, field, options){
         .sort(comparator);
 }
 
-window.onload = function(){
+function choseField(id){
+  if (id == '#bil'){return 'Worldwide_Gross_M'}
+  if (id == '#orca'){return 'Budget_M'}
+  if (id == '#luc'){return 'lucro'}
+}
+
+function getOptions(id){
+  if (id == '#bil'){return {color:'#6298ef'}}
+  if (id == '#orca'){return {color: '#e60000'}}
+  if (id == '#luc'){return  {color:'#6b9b69'}} 
+}
+
+function getTitle(id){
+  if (id == '#bil'){return 'Melhoes Bilheterias'}
+  if (id == '#orca'){return 'Melhores Orçamentos'}
+  if (id == '#luc'){return  'Melhores Lucros'}  
+}
+
+function showChart(id){
+  var html = ""
+
+  html += '<h3>'+getTitle(id)+'<h3>'  
 
   d3.json("movies.json", function(error,json){
       for (var i in json){
         json[i].lucro = json[i].Worldwide_Gross_M - json[i].Budget_M
-      }
-      createChart("#bil",json,'Worldwide_Gross_M' , {})
-      createChart("#orca",json, 'Budget_M', {color: '#e60000'})
-      createChart("#luc", json, 'lucro', {color:'black'})
+      }     
+      document.getElementById(id.replace('#','')).innerHTML = html
+      createChart(id,json, choseField(id), getOptions(id))
+      //createChart("#orca",json, 'Budget_M', {color: '#e60000'})
+      //createChart("#luc", json, 'lucro', {color:'black'})
   })
+}
+
+window.onload = function(){
+
+  
 
 }

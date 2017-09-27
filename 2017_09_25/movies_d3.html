@@ -18,21 +18,21 @@
 
   </head>
   <body>
-
-    <h3>Melhores Bilheterias</h3>
-    <div class="chart">
-        <div id="bil"></div>
+    
+    <div class="menu">
+        <button class="botao bil" onclick="showChart('#bil')">Bilheteria</button>
+        <button class="botao orc" onclick="showChart('#orca')">Orçamentos</button>
+        <button class="botao luc" onclick="showChart('#luc')">Lucros</button>
     </div>
 
-    <h3>Maiores Orçamentos</h3>
-    <div class="chart">
-        <div id="orca"></div>
-    </div>
+    
+    <div id="bil" class"chart"></div>
+ 
 
-    <h3>Melhores Lucros</h3>
-    <div class="chart">
-        <div id="luc"></div>
-    </div>
+    <div id="orca" class"chart"></div>
+   
+
+    <div id="luc" class"chart"></div>
 
   </body>
 </html>

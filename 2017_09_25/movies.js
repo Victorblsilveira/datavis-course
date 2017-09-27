@@ -1,4 +1,3 @@
-var d = d3
 function createChart(id, data, field, options){
   var color = options.color != undefined ? options.color : '#6298ef'
   var textColor = options.textColor != undefined ? options.textColor : 'white'
@@ -29,7 +28,7 @@ function createChart(id, data, field, options){
           });
 
   if(comparator)
-    d3.select("body")
+    d3.select(id)
         .selectAll("div.h-bar")
         .sort(comparator);
 }

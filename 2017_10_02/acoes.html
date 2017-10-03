@@ -21,11 +21,9 @@
 			// formatando nossos dados
             var ap = +data[0].apple
             var fa = +data[0].facebook
-            console.log(ap)
-            console.log(fa)
-            console.log(data[0])
+            
             var dtgFormat = d3.time.format("%Y/%m/%d");
-            data.forEach(function(d){                
+            data.forEach(function(d){
                 d.date = dtgFormat.parse(d.date);
                 d.apple = +d.apple;
                 d.facebook = +d.facebook;
@@ -57,7 +55,7 @@
                      .xUnits(d3.time.days)
                      .renderHorizontalGridLines(true)
                      .legend(dc.legend().x(700).y(5).itemHeight(13).gap(5))
-                     .brushOn(false)    
+                     .brushOn(false)
                      .compose([
                         dc.lineChart(compositeChart)
                                   .group(appleByDayGroup, 'Apple')
@@ -69,6 +67,6 @@
             dc.renderAll();
 
 		});
-	</script>			
+	</script>
 </body>
 </html>

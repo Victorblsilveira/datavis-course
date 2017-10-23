@@ -7,6 +7,17 @@
             <!-- Optional theme -->
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
+
+                  <!-- IMPORTING LEAFLET DEPENDENCIE -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+            integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+
+            <!-- Make sure you put this AFTER Leaflet's CSS -->
+            <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+            integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+            crossorigin=""></script>
+
+
             <!-- Custom styles for this template -->
             <link  rel="stylesheet" href="css/starter-template.css">
             <link rel="stylesheet" href="css/dc.css">
@@ -22,6 +33,9 @@
             </style>
         </head>
         <body>
+
+            <div id="mapid"></div>
+
             <div class='container-fluid'>
                 <h1> Earthquakes in New Zealand </h1>
                 <div id='magnitude-chart'>
@@ -49,11 +63,19 @@
                 </table>
             </div>
             <script type="text/javascript">
+
+            var map = L.map('mapid').setView([-41.05,172.93], 5);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a>            contributors',
+              maxZoom: 17
+            }).addTo(map);
+
             // Create the dc.js chart objects & link to divs
             var dataTable      = dc.dataTable("#dc-table-graph") 
             var magnitudeChart = dc.barChart("#magnitude-chart")
             var depthChart     = dc.barChart("#depth-chart")       
             var timeChart      = dc.lineChart("#time-chart")
+            var circle;
             // load data from a csv file
             d3.csv("earthquakes.csv", function (data) {
               // format our data
@@ -66,6 +88,19 @@
                 d.long = +d.longitude
                 d.mag = d3.round(+d.magnitude,1)
                 d.depth = d3.round(+d.depth, 0)
+
+                circle = L.circle([d.lat, d.long], d.mag*5000, {
+                  color: '#fd8d3c',
+                  weight: 1,
+                  fillColor: '#fecc5c',
+                  fillOpacity: 0.5
+                }).addTo(map);
+
+
+                var toolTip = '<h6>Maginitude: '+d.mag+'</h6>'+
+                              '<h6>Data: '+d.dtg+'</h6>'
+                circle.bindPopup(toolTip);
+
               })
               console.log(data)
               // Run the data through crossfilter and load our 'facts'

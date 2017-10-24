@@ -26,10 +26,10 @@
             <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
             <script src="js/dc.js" charset="utf-8"></script>
 
-            
+
             <style type="text/css">
-  
-              
+
+
             </style>
         </head>
         <body>
@@ -60,7 +60,7 @@
               console.log(data)
 
               data.forEach(function(d){
-                
+
                 d.dtg = dtgFormat.parse(d.Date)
                 circle = L.circle([+d.Latitude, +d.Longitude], 100, {
                   color: colorByType(d['Primary Type']),
@@ -77,23 +77,23 @@
 
               })
               // Run the data through crossfilter and load our 'facts'
-              var facts = crossfilter(data);              
+              var facts = crossfilter(data);
 
               //Create dataTable dimension using the date (dtg)
-             
+
 
               //Create a dimension for Magnitude
               var crimeDim = facts.dimension(function(d){
                 return d['Primary Type'];
               });
-              
+
               //Create a group for Magnitude that just counts the number of elements in the group
               var crimeGroup = crimeDim.group()
 
               var timeDim = facts.dimension(function(d){
                 return [d['Primary Type'], d3.time.day(d.dtg)];
               })
-              
+
               var timeGroup = timeDim.group()
               // Configure Magnitude Bar Graph
               // 480 x 150
@@ -111,23 +111,26 @@
               .xUnits(dc.units.ordinal)
               .elasticY(true);
 
+              var minDate = timeDim.bottom(1)[0].dtg
+              var maxDate = timeDim.top(1)[0].dtg
 
               crimeSeriesChart.width(900)
               .height(150)
               .dimension(timeDim)
               .group(timeGroup)
-              .x(d3.scale.ordinal().domain(['HOMICIDE', 'BURGLARY', 'ROBBERY']))
-              .xUnits(dc.units.ordinal)
-            
+              .x(d3.time.scale().domain([minDate,maxDate]))
+              .seriesAccessor(function(d){return d.key[0]})
+              .keyAccessor(function(d){return d.key[1]})
+
               // Render the Charts
               dc.renderAll();
-  
+
             });
 
             function colorByType(type){
                 if (type =='HOMICIDE')return 'red'
-                if (type =='BURGLARY')return 'blue'           
-                if (type =='ROBBERY')return 'gray'           
+                if (type =='BURGLARY')return 'blue'
+                if (type =='ROBBERY')return 'gray'
             }
 
             </script>
@@ -137,6 +140,5 @@
             <!-- Include all compiled plugins (below), or include individual files as needed -->
              <!-- Latest compiled and minified JavaScript -->
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-                
         </body>
 </html>

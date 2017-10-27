@@ -38,7 +38,7 @@
 
             <div id="bar-chart"></div>
 
-            <div id="line-chart"></div>
+            <div id="series-chart"></div>
 
             <script type="text/javascript">
 
@@ -48,10 +48,10 @@
               maxZoom: 17
             }).addTo(map);
 
-            var dtgFormat = d3.time.format.utc("%m/%d/%Y %I:%M:%S %p")
+            var dtgFormat = d3.time.format("%m/%d/%Y")
             // Create the dc.js chart objects & link to divs
             var crimeBarChart = dc.barChart("#bar-chart")
-            var crimeSeriesChart  = dc.seriesChart("#line-chart")
+            var crimeSeriesChart  = dc.seriesChart("#series-chart")
 
             var circle;
             // load data from a csv file
@@ -60,8 +60,7 @@
               console.log(data)
 
               data.forEach(function(d){
-
-                d.dtg = dtgFormat.parse(d.Date)
+                d.dtg = dtgFormat.parse(d.Date.split(" ")[0])
                 circle = L.circle([+d.Latitude, +d.Longitude], 100, {
                   color: colorByType(d['Primary Type']),
                   weight: 1,
@@ -69,7 +68,7 @@
                   fillOpacity: 0.5
                 }).addTo(map);
 
-
+                // console.log(d.dtg);
                 var toolTip = '<h6>Crime Type: '+d['Primary Type']+'</h6>'+
                               '<h6>Block: '+d.Block+'</h6>'+
                               '<h6>Data: '+d.Date+'</h6>'
@@ -91,17 +90,23 @@
               var crimeGroup = crimeDim.group()
 
               var timeDim = facts.dimension(function(d){
-                return [d['Primary Type'], d3.time.day(d.dtg)];
+                  return d.dtg
               })
 
               var timeGroup = timeDim.group()
+
+              var seriesDim = facts.dimension(function(d){
+                return [d["Primary Type"], d.dtg];
+              })
+
+              var seriesGroup = seriesDim.group()
               // Configure Magnitude Bar Graph
               // 480 x 150
               // x dimension domain: [0, 8]
               //use a gap of 56, this number is very obscure. It seems to depend on the width of the chart and on the number of dimensions. It was found using trial and error.
               //set elasticY to true
               crimeBarChart.width(480)
-              .height(150)
+              .height(300)
               .margins({top:10, right:10, bottom:20, left:40})
               .dimension(crimeDim)
               .group(crimeGroup)
@@ -113,15 +118,20 @@
 
               var minDate = timeDim.bottom(1)[0].dtg
               var maxDate = timeDim.top(1)[0].dtg
+              console.log(minDate);
+              console.log(maxDate);
 
-              crimeSeriesChart.width(900)
-              .height(150)
-              .dimension(timeDim)
-              .group(timeGroup)
+              crimeSeriesChart.width(480)
+              .height(300)
+              .chart(function(c) { return dc.lineChart(c).interpolate('cardinal'); })
+              .dimension(seriesDim)
+              .group(seriesGroup)
+              .ordinalColors(["red","blue","gray"])
               .x(d3.time.scale().domain([minDate,maxDate]))
               .seriesAccessor(function(d){return d.key[0]})
               .keyAccessor(function(d){return d.key[1]})
-
+              .valueAccessor(function(d){return d.value})
+              .legend(dc.legend().x(50).y(10).itemHeight(13).gap(5));
               // Render the Charts
               dc.renderAll();
 

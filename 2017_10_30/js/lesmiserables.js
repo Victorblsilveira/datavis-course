@@ -3,7 +3,7 @@ function Network() {
       width = 960,
       height = 800,
       // our force directed layout
-      force = d3.layout.force(), 
+      force = d3.layout.force(),
       // these will point to the circles and lines
       // of the nodes and links
       link = null,
@@ -48,7 +48,7 @@ function Network() {
         d.degree =  getDegree(d,data.links);
         return d.degree;
     });
-    
+
     circleRadius = d3.scale.sqrt().range([3, 15]).domain(countExtent);
 
     //First let's randomly dispose data.nodes (x/y) within the the width/height
@@ -66,7 +66,7 @@ function Network() {
 
     // Then we will create a map with
     // id's -> node objects
-    // using the mapNodes function above and store it in the nodesMap variable.    
+    // using the mapNodes function above and store it in the nodesMap variable.
     var nodesMap = mapNodes(data.nodes);
 
     // Then we will switch links to point to node objects instead of id's
@@ -141,40 +141,40 @@ function Network() {
       .attr("class", "link")
       .attr("stroke", "#ddd").attr("stroke-opacity", 0.8)
       .attr("x1", function(d) {
-          return d.source.x; 
+          return d.source.x;
       })
       .attr("y1", function(d) {
-          return d.source.y; 
+          return d.source.y;
       })
       .attr("x2", function(d) {
-          return d.target.x; 
+          return d.target.x;
       })
       .attr("y2", function(d) {
-          return d.target.y; 
-      });    
+          return d.target.y;
+      });
   }
 
   // tick function for force directed layout
   var forceTick = function(e) {
     node.attr("cx", function(d) {
-          return d.x; 
+          return d.x;
       })
       .attr("cy", function(d) {
-          return d.y; 
+          return d.y;
       });
 
     link.attr("x1", function(d) {
-          return d.source.x; 
+          return d.source.x;
       })
       .attr("y1", function(d) {
-          return d.source.y; 
+          return d.source.y;
       })
       .attr("x2", function(d) {
-          return d.target.x; 
+          return d.target.x;
       })
       .attr("y2", function(d) {
           return d.target.y;
-      });    
+      });
   };
 
   // Starting point for network visualization
@@ -202,7 +202,7 @@ function Network() {
     updateLinks();
 
     // set the tick callback, charge and linkDistance
-    force.on("tick", forceTick).charge(-200).linkDistance(50);
+    force.on("tick", forceTick).charge(-100).linkDistance(100);
 
     // perform rendering and start force layout
     return force.start();

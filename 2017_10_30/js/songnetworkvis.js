@@ -20,10 +20,13 @@ function Network() {
   // Returns d3.map of ids -> nodes
   function mapNodes(nodes) {
     var nodesMap;
+
     nodesMap = d3.map();
+
     nodes.forEach(function(n) {
       return nodesMap.set(n.id, n);
     });
+
     return nodesMap;
   }
 
@@ -66,13 +69,27 @@ function Network() {
   }
 
   // Mouseover tooltip function
-  function showDetails(d, i) {
-    
+  function showDetails(node, d, i) {
+    var content;
+    content = '<p class="main"><span>'+d.name+'</span></p>'+
+              '<hr class="tooltip-hr">'+
+              '<p class="main"><span>'+d.artist+'</span></p>';
+
+    tooltip.showTooltip(content, d3.event);
+
+    return d3.select(node).style("stroke","black").style("stroke-width",2.0);
+
   }
 
   // Mouseout function
   function hideDetails(d, i) {
-    
+    tooltip.hideTooltip();
+
+    node.style("stroke",function(n){
+      return '#555';
+    }).style("stroke-width",function(d){
+      return 1.0;
+    })
   }
 
   // enter/exit display for nodes
@@ -83,9 +100,6 @@ function Network() {
       return d.id;
     });
 
-    node.on("mouseover", function(d,i){showDetails(this,d,i)})
-        .on("mouseout", function(d,i){hideDetails(this,d,i)});
-
     // set cx, cy, r attributes and stroke-width style
     node.enter()
       .append("circle").attr("class", "node").attr("cx", function(d) {
@@ -95,6 +109,10 @@ function Network() {
       .attr("r", function(d) {
         return d.radius;})
       .style("stroke-width", 1.0);
+
+
+    node.on("mouseover", function(d,i){showDetails(this,d,i)})
+        .on("mouseout", function(d,i){hideDetails(d,i)});
   }
 
   // enter/exit display for links
